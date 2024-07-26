@@ -8,7 +8,7 @@
 tcpdump options proto dir type
 ```
 
-![tcpdump](D:\typora\md文件\imgs\tcpdump.png "你是猪吗")
+![tcpdump](imgs\tcpdump.png "你是猪吗")
 
 SYNOPSIS
        tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ]
@@ -127,11 +127,11 @@ int getpeername(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 
 - 服务器：
 
-![image-20230808143309606](D:\typora\md文件\imgs\LinuxServer_chapter_05_01.png)
+![image-20230808143309606](imgs\LinuxServer_chapter_05_01.png)
 
 - 客户端
 
-![image-20230808143618251](D:\typora\md文件\imgs\LinuxServer_chapter_05_02.png)
+![image-20230808143618251](imgs\LinuxServer_chapter_05_02.png)
 
 结果分析：
 
