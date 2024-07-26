@@ -82,13 +82,46 @@ grep [选项] [模式] [文件...]
 - `-x` ：完全匹配整行
   - `grep -x "pattern" file.txt` 	查找 `file.txt` 中整行完全匹配 `pattern` 的行
 
-所以 `grep` 基本上是来查找文件的，平时用 `find . | grep "main"` 来递归地查找当前目录包含特定字符的文件，`find . | grep "main" | xargs cat` 来输出行， 但其实 `grep-r "main" .` 就可以胜任
+所以 `grep` 基本上是来查找文件的，平时用 `find . | grep "main"` 来递归地查找当前目录包含特定字符的文件，`find . | grep "main" | xargs cat` 来输出行， 但其实 `grep-r "main" .` 就可以胜任。所以，`grep` 既能输出文件名，也能输出文件的内容。
 
 
 
 ## ag
 
+用于在文件中进行快速的文本搜索。`ag` 通常比 `grep` 更快
 
+### 基本用法
+
+```bash
+ag [选项] [模式] [路径...]
+```
+
+- **`[选项]`**: 用于控制 `ag` 的行为。
+- **`[模式]`**: 要搜索的文本模式，可以是一个字符串或正则表达式。
+- **`[路径...]`**: 要搜索的目录或文件。如果未指定路径，`ag` 将在当前目录及其子目录中搜索。
+
+### 常用选项
+
+- `-i` ：忽略大小写
+  - `ag -i "pattern" file.txt` `file.txt`  	查找 `file.txt` 中所有匹配 `pattern`（忽略大小写）的行
+- `-v` ：反转匹配，输出不匹配的行
+  - `ag -v "pattern" file.txt` 	输出 `file.txt` 中不包含 `pattern` 的所有行
+- `-r` ： 递归搜索目录（默认行为）
+  - `ag -r "pattern" /path/to/directory` 	在 `/path/to/directory` 目录及其子目录中递归搜索 `pattern`
+- `-l` ：仅输出包含匹配模式的文件名
+  - `ag -l "pattern" *.txt` 	列出当前目录中所有包含 `pattern` 的 `.txt` 文件
+- `-n` ：显示匹配行的行号
+  - `ag -n "pattern" file.txt` 	输出 `file.txt` 中所有匹配 `pattern` 的行及其行号
+- `-o` ：仅输出匹配的部分
+  - `ag -o "pattern" file.txt` 	仅输出 `file.txt` 中匹配 `pattern` 的部分，而不是整行
+- `-w` ：匹配整个单词
+  - `ag -w "pattern" file.txt` 	查找 `file.txt` 中以 `pattern` 为单词的行，而不是作为单词的一部分
+- `-x` ：完全匹配整行
+  - `ag -x "pattern" file.txt` 	查找 `file.txt` 中整行完全匹配 `pattern` 的行
+- `--ignore` ：忽略特定文件或目录
+  - `ag --ignore "*.log" "pattern" /path/to/directory` 	搜索 `/path/to/directory` 中的文件，忽略所有 `*.log` 文件
+- `--status` ：显示搜索统计信息
+  - `ag --stats "pattern" file.txt` 	显示搜索统计信息，如匹配的文件数、行数等
 
 
 
@@ -98,14 +131,74 @@ grep [选项] [模式] [文件...]
 
 `awk` 是一种强大的文本处理工具，通常用于从文件或标准输入流中提取数据、转换数据格式和执行其他文本处理任务。它以行为单位逐行扫描文本文件，并按照用户指定的规则进行处理。
 
+### 基本用法
+
+```bash
+awk [选项] '脚本' 文件
+```
+
+- **`[选项]`**: 用于控制 `awk` 的行为。
+- **`'脚本'`**: 一系列 `awk` 命令，用单引号括起来。脚本中的命令会应用到文件的每一行。
+- **`文件`**: 要处理的输入文件。如果没有指定文件，`awk` 会从标准输入读取数据。
+
+### `awk` 脚本结构
+
+`awk` 脚本通常由**模式-动作**对组成。每一行被模式匹配到的文本行都会执行相应的动作。
+
+```bash
+pattern { action }
+```
+
+- **`pattern`**: 一个条件表达式，如果为真，则执行后面的动作。
+- **`action`**: 在模式匹配到的行上执行的操作。
+
+### 常用选项
+
 - `awk '{ print $1 }' file.txt` ：提取文件中每行的第一个字段，默认使用空格作为字段分隔符
-- `-F`：指定字段分隔符
+- `-F` ：指定字段分隔符
+  - `awk -F ',' '{ print $1 }' file.csv` 	使用逗号作为字段分隔符，输出文件中每行的第一个字段
+
+- `-v` ：向 `awk` 程序传递变量
+  - `awk -v var=5 '{ print $1 * var }' file.txt` 	将 `var` 变量设置为 5，并在脚本中使用
+  - `awk '{ printf "Line %d: %s\n", NR, $0 }' file.txt` 使用 `printf` 格式化输出，输出每行的行号和内容
+
+
+
+
+
 
 
 
 ## xargs
 
+用于将标准输入的数据转化为命令行参数，并执行指定的命令
 
+### 基本用法
+
+```bash
+xargs [选项] [命令] [初始化参数]
+```
+
+- **`[选项]`**: 用于控制 `xargs` 的行为。
+- **`[命令]`**: 要执行的命令。
+- **`[初始化参数]`**: 为命令提供的初始参数。
+
+如果没有指定 `命令`，`xargs` 默认使用 `echo` 命令。
+
+### 常用选项
+
+- `-n N` ：每次传递 `N` 个参数给命令
+  - `echo "file1 file2 file3" | xargs -n 2 rm` 	每次传递 2 个参数给 `rm` 命令
+- `-0` ： 以空字符（null character）作为分隔符
+  - `find /path -type f -print0 | xargs -0 rm` 	处理包含空格或特殊字符的文件名时非常有用
+- `-I {}` ： 将 `{}` 替换为输入数据中的每个元素
+  - `echo "file1 file2 file3" | xargs -I {} mv {} /new/location/` 	将每个文件移动到新位置，`{}` 表示将替换为输入数据
+- `-P N` ： 并行执行 `N` 个进程
+  - `cat urls.txt | xargs -P 4 -n 1 wget` 	并行执行 4 个 `wget` 进程来下载文件
+- `-t` ： 显示执行的命令
+  - `echo "file1 file2" | xargs -t rm` 	显示执行的 `rm file1 file2` 命令
+- `--max-lines=N` 或 `-L N` ： 每次用 `N` 行输入调用一次命令
+  - `cat file_list.txt | xargs -L 1 echo` 	每次读取一行输入，并将其作为参数传递给 `echo` 命令
 
 
 
@@ -230,7 +323,7 @@ lsof（list open file）是一个列出当前系统打开的文件描述符的�
 
 `less` 是一个功能强大的文本查看器
 
-#### 常用键操作
+### 常用键操作
 
 - **空格键**：向下滚动一页。
 - **b 键**：向上滚动一页。
